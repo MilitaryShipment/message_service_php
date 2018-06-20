@@ -9,8 +9,8 @@ class Message extends Record{
     const TABLE = 'tbl_sent_messages';
     const PRIMARYKEY = 'id';
 
-    public $to;
-    public $from;
+    public $send_to;
+    public $send_from;
     public $fromName;
     public $replyTo;
     public $cc;
