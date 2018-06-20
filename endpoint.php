@@ -19,7 +19,7 @@ class EndPoint extends API{
         }
         $message = new Message();
         $message->setFields($this->request)->create();
-        Messenger::send($this->request->to,$this->request->from,$this->request->fromName,$this->request->replyTo,$this->request->cc,$this->request->bcc,$this->request->subject,$this->request->body,$this->request->attachments);
+        Messenger::send($this->request->send_to,$this->request->send_from,$this->request->fromName,$this->request->replyTo,$this->request->cc,$this->request->bcc,$this->request->subject,$this->request->body,$this->request->attachments);
         return $message;
     }
     protected function verify(){
