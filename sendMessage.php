@@ -21,7 +21,7 @@ class SendMessage
 
     public function send()
     {
-        define('PHP_MAILER', __DIR__ . '/thirdParty/class.phpmailer.php');
+        define('PHP_MAILER', __DIR__ . '/class.phpmailer.php');
         define('EMAIL_HOST', "mail.allamericanmoving.com");
         define('MAX_EMAIL_SIZE', 12500000);
         require_once(PHP_MAILER);
