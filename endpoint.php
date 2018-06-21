@@ -18,6 +18,7 @@ class EndPoint extends API{
             throw new Exception('This resouce is accessible only through POST');
         }
         $message = new Message();
+        $message->status_id = 1;
         $message->setFields($this->request)->create();
         Messenger::send($this->request->send_to,$this->request->send_from,$this->request->fromName,$this->request->replyTo,$this->request->cc,$this->request->bcc,$this->request->subject,$this->request->body,$this->request->attachments);
         return $message;
@@ -34,6 +35,23 @@ class EndPoint extends API{
             $contact = $this->verb;
         }
         return Messenger::verify($contact);
+    }
+    protected function message(){
+        $data = null;
+        if(!isset($this->verb) && !isset($this->args[0]) && $this->method == 'POST'){ //create
+            throw new \Exception('This resouce is accessible only through GET');
+        }elseif(!isset($this->verb) && !isset($this->args[0]) && $this->method == 'GET'){ //get all
+            $data = Message::get('status_id',1);
+        }elseif(!isset($this->verb) &&(int)$this->args[0] && $this->method == 'GET'){ //get by id
+            $data = new Message($this->args[0]);
+        }elseif((int)$this->args[0] && $this->method == 'PUT'){ //update by id
+            throw new \Exception('This resouce is accessible only through GET');
+        }elseif(isset($this->verb)){
+            throw new \Exception('Malformed Request');
+        }else{
+            throw new \Exception('Malformed Request');
+        }
+        return $data;
     }
 
 }
