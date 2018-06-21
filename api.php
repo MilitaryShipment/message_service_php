@@ -40,7 +40,7 @@ abstract class API{
                 if(preg_match("/application\/json/",$this->headers['Content-Type'])){
                     $this->request = $this->_cleanInputs(json_decode(file_get_contents("php://input",true)));
                 }else{
-                    $this->request = $this->_cleanInputs($_POST);
+                    $this->request = $this->_toObj($this->_cleanInputs($_POST));
                 }
                 break;
             case "GET":
@@ -89,5 +89,12 @@ abstract class API{
             500=>'Internal Server Error'
         );
         return ($status[$code]) ? $status[$code] : $status[500];
+    }
+    private function _toObj($arr){
+        $data = new stdClass();
+        foreach($arr as $key=>$value){
+            $data->$key = $value;
+        }
+        return $data;
     }
 }

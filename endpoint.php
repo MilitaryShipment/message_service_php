@@ -20,7 +20,13 @@ class EndPoint extends API{
         $message = new Message();
         $message->status_id = 1;
         $message->setFields($this->request)->create();
-        Messenger::send($this->request->send_to,$this->request->send_from,$this->request->fromName,$this->request->replyTo,$this->request->cc,$this->request->bcc,$this->request->subject,$this->request->body,$this->request->attachments);
+        if(isset($this->request->attachments)){
+            $attachments = array();
+            foreach($_FILES as $file){
+                $attachments[] = $file['tmp_name'];
+            }
+        }
+        Messenger::send($this->request->send_to,$this->request->send_from,$this->request->fromName,$this->request->replyTo,$this->request->cc,$this->request->bcc,$this->request->subject,$this->request->body,$attachments);
         return $message;
     }
     protected function verify(){
