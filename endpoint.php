@@ -17,15 +17,12 @@ class EndPoint extends API{
         if($this->method != 'POST'){
             throw new Exception('This resouce is accessible only through POST');
         }
+        if(isset($this->request->attachments)){
+            $attachments = $this->_parseAttachments();
+        }
         $message = new Message();
         $message->status_id = 1;
         $message->setFields($this->request)->create();
-        if(isset($this->request->attachments)){
-            $attachments = array();
-            foreach($_FILES as $file){
-                $attachments[] = $file['tmp_name'];
-            }
-        }
         Messenger::send($this->request->send_to,$this->request->send_from,$this->request->fromName,$this->request->replyTo,$this->request->cc,$this->request->bcc,$this->request->subject,$this->request->body,$attachments);
         return $message;
     }
@@ -58,6 +55,18 @@ class EndPoint extends API{
             throw new \Exception('Malformed Request');
         }
         return $data;
+    }
+    protected function _parseAttachments(){
+        $attachments = array();
+        $this->request->attachments = array();
+        foreach($_FILES as $file){
+            if(!move_uploaded_file($file['tmp_name'],'/tmp/' . $file['name'])){
+                throw new \Exception('Failed Saving File: ' . $file['name']);
+            }
+            $this->request->attachments[] = $file['name'];
+            $attachments[] = '/tmp/' . $file['name'];
+        }
+        return $attachments;
     }
 
 }
