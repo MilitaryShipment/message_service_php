@@ -19,6 +19,7 @@ class EndPoint extends API{
         }
         if(isset($this->request->attachments)){
             $attachments = $this->_parseAttachments();
+            $this->_parseRequestArrays();
         }
         $message = new Message();
         $message->status_id = 1;
@@ -67,6 +68,20 @@ class EndPoint extends API{
             $attachments[] = '/tmp/' . $file['name'];
         }
         return $attachments;
+    }
+    protected function _parseRequestArrays(){
+        $keys = array('send_to','cc','bcc');
+        foreach($keys as $key){
+            $this->request->$key = array();
+            $pattern = "/" . $key . "/";
+            foreach($this->request as $ind => $value){
+                if(preg_match($pattern,$ind) && $ind !== $key){
+                    unset($this->request->$ind);
+                    $this->request->$key[] = $value;
+                }
+            }
+        }
+        return $this;
     }
 
 }
